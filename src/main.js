@@ -1,4 +1,3 @@
-// query selector variables go here 👇
 var mainPage = document.querySelector(".main-poster");
 var formView = document.querySelector(".poster-form");
 var savedPosterView = document.querySelector(".saved-posters");
@@ -10,13 +9,17 @@ var backToMainButton = document.querySelector(".back-to-main");
 var randomButton = document.querySelector(".show-random");
 var formButton = document.querySelector(".show-form");
 var savedButton = document.querySelector(".show-saved");
-var savePosterButton = document.querySelector(".save-poster")
-var showMyPoster = document.querySelector(".make-poster")
-var imageUrl = document.querySelector("#poster-image-url")
-var title = document.querySelector("#poster-title")
-var quote = document.querySelector("#poster-quote")
-var savedGrid = document.querySelector(".saved-posters-grid")
-// we've provided you with some data to work with 👇
+var savePosterButton = document.querySelector(".save-poster");
+var showMyPoster = document.querySelector(".make-poster");
+var imageUrl = document.querySelector("#poster-image-url");
+var title = document.querySelector("#poster-title");
+var quote = document.querySelector("#poster-quote");
+var savedGrid = document.querySelector(".saved-posters-grid");
+var saveImg =  "";
+var saveTitle = "";
+var saveQuote = "";
+var mini ="";
+var currentPoster = "";
 var images = [
   "./assets/bees.jpg",
   "./assets/bridge.jpg",
@@ -115,41 +118,45 @@ var quotes = [
   "A champion is defined not by their wins but by how they can recover when they fall."
 ];
 var savedPosters = [];
-var currentPoster = '';
-// event listeners go here 👇 revise with onClick etc
 window.addEventListener("load", function(){
-  posterImage.src = getRandomIndex(images)
-  posterTitles.innerText = getRandomIndex(titles);
-  posterQuotes.innerText = getRandomIndex(quotes);
+  assignRandomPoster();
   showMyPoster.type = "button";
+  addElement();
+  addElement2();
   instantiateCurrentPoster();
+  saveImg = document.querySelector(".save-img");
+  saveTitle = document.querySelector(".save-title");
+  saveQuote = document.querySelector(".save-quote");
 });
-formButton.addEventListener("click", function(){  //.onClick
-  changePage(mainPage,formView)
+formButton.addEventListener("click", function(){
+  changePage(mainPage,formView);
 });
 randomButton.addEventListener("click", function(){
-  posterImage.src = getRandomIndex(images);
-  posterTitles.innerText = getRandomIndex(titles);
-  posterQuotes.innerText = getRandomIndex(quotes);
+  assignRandomPoster();
   instantiateCurrentPoster();
 });
 savedButton.addEventListener("click", function(){
-  changePage(mainPage,savedPosterView)
+  changePage(mainPage,savedPosterView);
 });
 showMainButton.addEventListener("click", function(){
-  changePage(formView,mainPage)
+  changePage(formView,mainPage);
 });
 backToMainButton.addEventListener("click", function(){
-  changePage(savedPosterView,mainPage)
+  changePage(savedPosterView,mainPage);
 });
-showMyPoster.addEventListener("click", function(){   //check out preventDefault()
-  changeMainPoster();
+showMyPoster.addEventListener("click", function(){
   instantiateMyPoster();
   changePage(mainPage,formView);
   addToArray();
  });
-savePosterButton.addEventListener("click", addToSaved);
-// functions and event handlers go here 👇
+savePosterButton.addEventListener("click", function(){
+  addToSaved();
+});
+function assignRandomPoster(){
+  posterImage.src = getRandomIndex(images);
+  posterTitles.innerText = getRandomIndex(titles);
+  posterQuotes.innerText = getRandomIndex(quotes);
+}
 function getRandomIndex(array) {
   var results = Math.floor(Math.random() * array.length);
   return array[results];
@@ -159,8 +166,8 @@ function changePage(hide, show) {
   hide.classList.toggle("hidden");
 };
 function changeMainPoster(){
-  posterImage.src = imageUrl.value;           // this is bad practice, DOM to DOM
-  posterTitles.innerText = title.value;;      // want DOM to Data Model To Dom
+  posterImage.src = imageUrl.value;
+  posterTitles.innerText = title.value;;
   posterQuotes.innerText = quote.value;;
 };
 function instantiateCurrentPoster(){
@@ -170,7 +177,7 @@ function instantiateMyPoster(){
   currentPoster = new Poster(imageUrl.value, title.value, quote.value);
 };
 function addToArray(){
-  images.push(imageUrl.value);  // can we use class?
+  images.push(imageUrl.value);
   titles.push(title.value);
   quotes.push(quote.value);
 };
@@ -179,8 +186,20 @@ function addToSaved(){
   if (savedPosters.length >= 1 && savedPosters[newLength].title === currentPoster.title && savedPosters[newLength].imageURL === currentPoster.imageURL && savedPosters[newLength].quote === currentPoster.quote){
     return
   }
-    savedPosters.push(currentPoster);
+  savedPosters.push(currentPoster);
+  saveToGrid(currentPoster.imageURL, currentPoster.title, currentPoster.quote);
 };
 function addElement(){
-
-}
+  savedGrid.insertAdjacentHTML("afterbegin", "<article class = mini-poster>");
+};
+function addElement2(mini){
+  mini = document.querySelector(".mini-poster")
+  mini.insertAdjacentHTML("afterbegin", "<h4 class =save-quote>quote</h4>");
+  mini.insertAdjacentHTML("afterbegin", "<h2 class = save-title>title</h2>");
+  mini.insertAdjacentHTML("afterbegin", "<img class = save-img>");
+};
+function saveToGrid(url, title, quote){
+  saveImg.src = url;
+  saveTitle.innerText = title;
+  saveQuote.innerText = quote;
+ }
